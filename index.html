@@ -3,666 +3,912 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f5efe7">
-  <meta name="description" content="Небольшое личное письмо с извинением.">
-  <title>Небольшое письмо</title>
+  <meta name="theme-color" content="#171714">
+  <meta name="description" content="Интерактивное дело о знакомстве, которое отказалось начинаться нормально.">
+  <title>Архив №404</title>
   <style>
     :root {
-      color-scheme: light;
-      --paper: #fffdf8;
-      --paper-deep: #f5efe7;
-      --ink: #2d2926;
-      --muted: #746b64;
-      --line: #ddd2c7;
-      --rose: #aa6f73;
-      --rose-dark: #805256;
-      --shadow: 0 28px 70px rgba(69, 51, 41, .16);
+      color-scheme: dark;
+      --night: #171714;
+      --night-soft: #211f1a;
+      --paper: #e9dfc8;
+      --paper-deep: #d8c9aa;
+      --ink: #24211c;
+      --muted: #746b5b;
+      --line: rgba(51, 45, 36, .24);
+      --red: #9c3029;
+      --red-dark: #67211d;
+      --gold: #b5924c;
+      --green: #4f694e;
+      --shadow: 0 28px 70px rgba(0, 0, 0, .42);
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --serif: Iowan Old Style, Baskerville, Georgia, serif;
+      --sans: Avenir, "Avenir Next", "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
-
-    html, body { min-height: 100%; }
+    html { min-height: 100%; scroll-behavior: smooth; }
 
     body {
       margin: 0;
       min-height: 100svh;
       overflow-x: hidden;
       background:
-        radial-gradient(circle at 20% 12%, rgba(255,255,255,.85) 0 7%, transparent 31%),
-        radial-gradient(circle at 82% 84%, rgba(208,174,165,.18), transparent 32%),
-        var(--paper-deep);
-      color: var(--ink);
-      font-family: Avenir, "Avenir Next", "Segoe UI", sans-serif;
+        radial-gradient(circle at 50% -10%, rgba(181, 146, 76, .12), transparent 38%),
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        var(--night);
+      background-size: auto, 34px 34px, 34px 34px, auto;
+      color: var(--paper);
+      font-family: var(--sans);
     }
 
     body::before {
       content: "";
       position: fixed;
       inset: 0;
+      z-index: -1;
       pointer-events: none;
-      opacity: .3;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
-      mix-blend-mode: multiply;
+      opacity: .18;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E");
+      mix-blend-mode: screen;
     }
+
+    button { font: inherit; }
 
     main {
-      width: min(100% - 32px, 760px);
-      min-height: 100svh;
+      width: min(100% - 28px, 980px);
       margin: 0 auto;
+      padding: 42px 0 80px;
+    }
+
+    .archive-intro {
+      min-height: calc(100svh - 84px);
       display: grid;
       place-items: center;
-      padding: 48px 0;
-    }
-
-    .scene {
-      width: 100%;
       text-align: center;
+      transition: min-height .65s ease, opacity .35s ease;
     }
 
-    .eyebrow {
-      margin: 0 0 22px;
-      color: var(--muted);
-      font-size: .72rem;
-      font-weight: 700;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      transition: opacity .5s ease, transform .5s ease;
-    }
-
-    .envelope-wrap {
+    .folder {
       position: relative;
-      width: min(92vw, 470px);
-      height: 300px;
-      margin: 0 auto;
-      perspective: 1100px;
-      transition: height .9s cubic-bezier(.22,.7,.2,1);
+      width: min(92vw, 570px);
+      padding: clamp(42px, 7vw, 66px) clamp(24px, 7vw, 64px) 48px;
+      color: var(--ink);
+      background:
+        linear-gradient(112deg, rgba(255,255,255,.25), transparent 28%),
+        var(--paper-deep);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 3px 14px 14px 3px;
+      box-shadow: var(--shadow);
+      transform: rotate(-1deg);
     }
 
-    .envelope {
+    .folder::before {
+      content: "АРХИВ / ЛИЧНОЕ";
       position: absolute;
-      inset: 35px 0 auto;
-      height: 265px;
-      filter: drop-shadow(0 24px 28px rgba(73, 52, 40, .18));
-      transition: transform .9s cubic-bezier(.22,.7,.2,1), opacity .6s ease;
-    }
-
-    .envelope-back,
-    .envelope-front {
-      position: absolute;
-      inset: 0;
-      border-radius: 8px;
-    }
-
-    .envelope-back {
-      background: #d8b6a7;
-      border: 1px solid rgba(97,63,52,.1);
-    }
-
-    .flap {
-      position: absolute;
-      z-index: 4;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 58%;
-      transform-origin: top;
-      transform-style: preserve-3d;
-      transition: transform .75s cubic-bezier(.4,0,.2,1);
-    }
-
-    .flap::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: #e4c9bd;
-      clip-path: polygon(0 0, 100% 0, 50% 100%);
-      backface-visibility: hidden;
-    }
-
-    .letter {
-      position: absolute;
-      z-index: 2;
-      left: 6%;
-      right: 6%;
-      top: 16px;
-      min-height: 230px;
-      padding: 38px 38px 34px;
-      overflow: hidden;
+      top: -28px;
+      left: 24px;
+      width: 180px;
+      padding: 9px 12px 12px;
+      border-radius: 8px 8px 0 0;
+      background: #c7b68f;
+      color: rgba(36,33,28,.68);
+      font: 800 .68rem/1 var(--mono);
+      letter-spacing: .1em;
       text-align: left;
-      background: var(--paper);
-      border: 1px solid rgba(102,75,62,.09);
-      border-radius: 4px;
-      box-shadow: 0 4px 12px rgba(60,40,30,.08);
-      opacity: 0;
-      transform: translateY(74px) scale(.94);
-      transition:
-        opacity .25s ease,
-        left .7s ease,
-        right .7s ease,
-        transform 1s cubic-bezier(.2,.75,.18,1),
-        min-height .9s cubic-bezier(.22,.7,.2,1),
-        padding .8s ease;
     }
 
-    .letter-content {
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity .65s .55s ease, transform .65s .55s ease;
-    }
-
-    .letter h1 {
-      max-width: 540px;
-      margin: 0 0 26px;
-      font-family: Iowan Old Style, Baskerville, Georgia, serif;
-      font-size: clamp(2rem, 7vw, 3.35rem);
-      font-weight: 400;
-      line-height: 1.02;
-      letter-spacing: -.035em;
-      text-wrap: balance;
-    }
-
-    .letter p {
+    .file-code {
       margin: 0 0 18px;
-      font-family: Iowan Old Style, Baskerville, Georgia, serif;
-      font-size: clamp(1.05rem, 3vw, 1.24rem);
-      line-height: 1.68;
-      text-wrap: pretty;
-    }
-
-    .letter .quiet { color: var(--muted); }
-
-    .case-file {
-      margin-top: 30px;
-      padding: 22px;
-      border: 1px dashed var(--line);
-      border-radius: 18px;
-      background: rgba(245, 239, 231, .48);
-    }
-
-    .case-label {
-      margin: 0 0 8px !important;
-      color: var(--rose-dark);
-      font: 800 .7rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      color: var(--red-dark);
+      font: 800 .76rem/1.3 var(--mono);
       letter-spacing: .16em;
       text-transform: uppercase;
     }
 
-    .case-title {
-      margin: 0 0 18px;
-      font-family: Iowan Old Style, Baskerville, Georgia, serif;
-      font-size: 1.25rem;
-      font-weight: 400;
+    .folder h1 {
+      margin: 0;
+      font: 400 clamp(2.9rem, 10vw, 5.8rem)/.9 var(--serif);
+      letter-spacing: -.055em;
     }
 
-    .evidence-list {
+    .folder .subtitle {
+      max-width: 420px;
+      margin: 22px auto 30px;
+      color: #544c40;
+      font: 600 clamp(1rem, 3vw, 1.18rem)/1.55 var(--sans);
+      text-wrap: balance;
+    }
+
+    .access-button,
+    .scan-button {
+      min-height: 50px;
+      padding: 13px 22px;
+      border: 1px solid var(--red-dark);
+      border-radius: 3px;
+      background: var(--red);
+      color: #fff8e9;
+      font: 800 .78rem/1.2 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 4px 4px 0 rgba(68,29,25,.24);
+      transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+
+    .access-button:hover,
+    .scan-button:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 rgba(68,29,25,.24); background: var(--red-dark); }
+    button:focus-visible { outline: 3px solid var(--gold); outline-offset: 4px; }
+
+    .classification {
+      position: absolute;
+      right: 22px;
+      bottom: 18px;
+      margin: 0;
+      color: rgba(103,33,29,.58);
+      font: 800 .62rem/1.2 var(--mono);
+      letter-spacing: .12em;
+      transform: rotate(-3deg);
+      text-transform: uppercase;
+    }
+
+    .casebook[hidden] { display: none; }
+
+    .casebook {
+      animation: casebook-in .7s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .opened .archive-intro { min-height: 0; opacity: 0; pointer-events: none; }
+    .opened .archive-intro[hidden] { display: none; }
+
+    .case-header {
       display: grid;
-      gap: 10px;
-      margin: 0 0 16px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 26px;
+      align-items: end;
+      padding: 0 4px 24px;
+      border-bottom: 1px solid rgba(233,223,200,.16);
+    }
+
+    .case-kicker {
+      margin: 0 0 8px;
+      color: var(--gold);
+      font: 800 .72rem/1.3 var(--mono);
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .case-header h2 {
+      max-width: 710px;
+      margin: 0;
+      font: 400 clamp(2.3rem, 7vw, 4.7rem)/.95 var(--serif);
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+
+    .case-state {
+      padding: 9px 11px;
+      border: 1px solid rgba(233,223,200,.24);
+      color: rgba(233,223,200,.72);
+      font: 700 .66rem/1.3 var(--mono);
+      letter-spacing: .08em;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .briefing {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      margin: 28px 0;
+      overflow: hidden;
+      border: 1px solid rgba(233,223,200,.15);
+      background: rgba(233,223,200,.15);
+    }
+
+    .plan {
+      min-height: 142px;
+      padding: 22px;
+      background: var(--night-soft);
+    }
+
+    .plan-label {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font: 800 .7rem/1.2 var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    .plan p:last-child {
+      margin: 0;
+      color: rgba(233,223,200,.84);
+      font: 400 1.04rem/1.55 var(--serif);
+    }
+
+    .board {
+      position: relative;
+      padding: clamp(18px, 4vw, 34px);
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        linear-gradient(rgba(68,59,46,.075) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(68,59,46,.075) 1px, transparent 1px),
+        var(--paper-deep);
+      background-size: 24px 24px;
+      border-radius: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    .board-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+
+    .board-label {
+      margin: 0 0 5px;
+      color: var(--red-dark);
+      font: 800 .7rem/1.2 var(--mono);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+
+    .board h3 {
+      margin: 0;
+      font: 600 clamp(1.55rem, 4vw, 2.25rem)/1 var(--serif);
+    }
+
+    .progress {
+      min-width: 122px;
+      margin: 0;
+      color: var(--muted);
+      font: 800 .7rem/1.3 var(--mono);
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .progress strong { display: block; color: var(--red-dark); font-size: 1.4rem; }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin: 0 0 24px;
       padding: 0;
       list-style: none;
     }
 
-    .evidence {
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      gap: 12px;
-      align-items: start;
-      padding: 13px 14px;
-      border-radius: 12px;
-      background: var(--paper);
-      box-shadow: 0 3px 10px rgba(60,40,30,.05);
-      cursor: pointer;
-      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    .timeline::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: 12px;
+      left: 10%;
+      right: 10%;
+      height: 2px;
+      background: rgba(80,70,55,.24);
     }
 
-    .evidence:hover { transform: translateY(-2px); }
-    .evidence:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; }
-    .evidence.revealed { background: #fffaf4; animation: evidence-in .45s cubic-bezier(.2,.8,.2,1) both; }
+    .timeline li {
+      position: relative;
+      z-index: 1;
+      color: var(--muted);
+      font: 700 .59rem/1.25 var(--mono);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .timeline-dot {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto 7px;
+      border: 2px solid #8c816d;
+      border-radius: 50%;
+      background: var(--paper-deep);
+      color: transparent;
+      transition: background .25s ease, border-color .25s ease, color .25s ease, transform .25s ease;
+    }
+
+    .timeline li.found .timeline-dot {
+      border-color: var(--red);
+      background: var(--red);
+      color: #fff4df;
+      transform: rotate(-7deg) scale(1.05);
+    }
+
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .evidence {
+      position: relative;
+      min-height: 150px;
+      padding: 18px 18px 16px;
+      overflow: hidden;
+      border: 1px solid rgba(58,50,39,.24);
+      border-radius: 2px;
+      background: #efe6d1;
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      box-shadow: 3px 4px 0 rgba(69,58,42,.14);
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    .evidence:nth-child(2n) { transform: rotate(.35deg); }
+    .evidence:nth-child(3n) { transform: rotate(-.45deg); }
+    .evidence:hover { transform: translateY(-3px) rotate(0); box-shadow: 6px 8px 0 rgba(69,58,42,.14); }
+    .evidence.revealed { background: #fff8e8; transform: rotate(0); }
+    .evidence:last-child { grid-column: 1 / -1; }
+
+    .evidence-top {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
 
     .evidence-number {
-      width: 30px;
-      height: 30px;
+      flex: 0 0 auto;
+      width: 34px;
+      height: 34px;
       display: grid;
       place-items: center;
       border: 1px solid var(--line);
       border-radius: 50%;
-      color: var(--rose-dark);
-      font: 800 .76rem/1 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      color: var(--red-dark);
+      font: 800 .72rem/1 var(--mono);
     }
 
-    .evidence strong {
+    .evidence-title {
       display: block;
-      margin-bottom: 3px;
-      font: 700 .92rem/1.3 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      font: 800 .9rem/1.25 var(--sans);
+      letter-spacing: .02em;
     }
 
-    .evidence span:last-child {
+    .evidence-hint {
+      display: block;
+      margin-top: 4px;
       color: var(--muted);
-      font: .86rem/1.5 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      font: 600 .68rem/1.3 var(--mono);
+      text-transform: uppercase;
     }
+
+    .evidence-body {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows .4s ease, opacity .28s ease, margin .4s ease;
+    }
+
+    .evidence-body > span { min-height: 0; overflow: hidden; }
+    .revealed .evidence-body { grid-template-rows: 1fr; margin-top: 14px; opacity: 1; }
 
     .evidence-detail {
       display: block;
-      max-height: 0;
-      overflow: hidden;
+      color: #4f473b;
+      font: 400 .94rem/1.5 var(--serif);
+    }
+
+    .system-note {
+      display: block;
+      margin-top: 11px;
+      padding-top: 10px;
+      border-top: 1px dashed rgba(63,54,41,.25);
+      color: var(--red-dark);
+      font: 800 .67rem/1.45 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .stamp {
+      position: absolute;
+      right: 12px;
+      bottom: 10px;
+      padding: 5px 7px;
+      border: 2px solid rgba(103,33,29,.68);
+      color: rgba(103,33,29,.68);
+      font: 900 .58rem/1 var(--mono);
+      letter-spacing: .08em;
       opacity: 0;
-      transition: max-height .45s ease, opacity .3s ease;
+      transform: rotate(-7deg) scale(1.4);
+      text-transform: uppercase;
+      transition: opacity .25s .16s ease, transform .3s .16s cubic-bezier(.2,.9,.2,1);
     }
 
-    .revealed .evidence-detail { max-height: 120px; opacity: 1; }
+    .revealed .stamp { opacity: 1; transform: rotate(-7deg) scale(1); }
 
-    .case-progress {
-      margin: 12px 0 0 !important;
+    .chronology-status {
+      margin: 20px 0 0;
+      padding: 12px 14px;
+      border: 1px solid rgba(63,54,41,.18);
+      background: rgba(255,255,255,.2);
       color: var(--muted);
-      font: 700 .82rem/1.4 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      font: 700 .72rem/1.4 var(--mono);
       text-align: center;
+      text-transform: uppercase;
     }
 
-    .genre-picker {
-      margin-top: 18px;
-      animation: evidence-in .45s ease both;
+    .chronology-status.complete { color: var(--green); border-color: rgba(79,105,78,.35); }
+
+    .lab {
+      margin-top: 30px;
+      padding: clamp(22px, 4vw, 34px);
+      border: 1px solid rgba(233,223,200,.16);
+      background: var(--night-soft);
     }
 
-    .genre-picker[hidden] { display: none; }
+    .lab[hidden] { display: none; }
 
-    .genre-title {
-      margin: 0 0 10px !important;
-      color: var(--ink);
-      font: 700 .9rem/1.4 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+    .lab-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .lab h3 { margin: 0 0 7px; font: 400 clamp(1.5rem, 4vw, 2.15rem)/1.1 var(--serif); }
+    .lab-copy { margin: 0; color: rgba(233,223,200,.62); font-size: .9rem; line-height: 1.5; }
+
+    .scan-panel {
+      display: none;
+      margin-top: 25px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(233,223,200,.13);
+    }
+
+    .scanning .scan-panel,
+    .scanned .scan-panel { display: block; }
+
+    .scan-row {
+      display: grid;
+      grid-template-columns: 190px 1fr 68px;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+      color: rgba(233,223,200,.78);
+      font: 700 .72rem/1.3 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .scan-track {
+      height: 8px;
+      overflow: hidden;
+      border: 1px solid rgba(233,223,200,.14);
+      background: #121210;
+    }
+
+    .scan-fill {
+      width: 0;
+      height: 100%;
+      background: var(--gold);
+      transition: width 1s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .scan-value { color: var(--paper); text-align: right; }
+    .scanned .scan-fill { width: var(--value); }
+    .scan-row.safe .scan-fill { background: var(--green); }
+    .scan-row.alert .scan-fill { background: var(--red); }
+
+    .scan-log {
+      min-height: 1.5em;
+      margin: 14px 0 0;
+      color: var(--gold);
+      font: 700 .72rem/1.45 var(--mono);
       text-align: center;
+      text-transform: uppercase;
+    }
+
+    .finale[hidden] { display: none; }
+    .finale { margin-top: 30px; animation: casebook-in .55s ease both; }
+
+    .finale-heading {
+      margin: 0 0 14px;
+      color: rgba(233,223,200,.68);
+      font: 800 .72rem/1.4 var(--mono);
+      letter-spacing: .1em;
+      text-align: center;
+      text-transform: uppercase;
     }
 
     .genre-options {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
 
     .genre-button {
-      min-height: 44px;
-      padding: 9px 8px;
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      background: var(--paper);
-      color: var(--ink);
-      font: 700 .78rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      min-height: 52px;
+      padding: 12px;
+      border: 1px solid rgba(233,223,200,.22);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--paper);
+      font: 800 .72rem/1.25 var(--mono);
+      text-transform: uppercase;
       cursor: pointer;
-      transition: transform .2s ease, color .2s ease, background .2s ease;
+      transition: color .2s ease, border-color .2s ease, background .2s ease, transform .2s ease;
     }
 
-    .genre-button:hover { transform: translateY(-2px); background: var(--rose); color: white; }
-    .genre-button:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; }
-    .genre-button.selected { background: var(--ink); color: var(--paper); }
+    .genre-button:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+    .genre-button.selected { border-color: var(--paper-deep); background: var(--paper-deep); color: var(--ink); }
 
     .verdict {
       display: none;
-      margin: 16px 0 0 !important;
-      padding-top: 15px;
-      border-top: 1px solid var(--line);
+      position: relative;
+      margin: 16px 0 0;
+      padding: clamp(24px, 5vw, 42px);
       color: var(--ink);
-      font: 700 .9rem/1.55 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
-      text-align: center;
-      animation: evidence-in .45s ease both;
+      background: var(--paper);
+      box-shadow: var(--shadow);
     }
 
-    .verdict.visible { display: block; }
+    .verdict.visible { display: block; animation: verdict-in .45s cubic-bezier(.2,.8,.2,1) both; }
+    .verdict-label { margin: 0 0 12px; color: var(--red-dark); font: 800 .68rem/1.3 var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+    .verdict-text { margin: 0; font: 400 clamp(1.35rem, 4vw, 2rem)/1.35 var(--serif); text-wrap: pretty; }
 
-    @keyframes evidence-in {
-      from { opacity: 0; transform: translateY(7px) rotate(-.3deg); }
+    .case-closed {
+      margin: 22px 0 0;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: #5a5144;
+      font: 700 .74rem/1.5 var(--mono);
+      text-transform: uppercase;
+    }
+
+    .verdict::after {
+      content: "ДЕЛО ЗАКРЫТО";
+      position: absolute;
+      right: 20px;
+      bottom: 18px;
+      padding: 7px 10px;
+      border: 3px double rgba(103,33,29,.48);
+      color: rgba(103,33,29,.48);
+      font: 900 .62rem/1 var(--mono);
+      letter-spacing: .1em;
+      transform: rotate(-4deg);
+    }
+
+    .privacy-note {
+      margin: 32px 0 0;
+      color: rgba(233,223,200,.38);
+      font: 600 .62rem/1.5 var(--mono);
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    @keyframes casebook-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes verdict-in {
+      from { opacity: 0; transform: translateY(12px) rotate(-.3deg); }
       to { opacity: 1; transform: translateY(0) rotate(0); }
     }
 
-    .rewind {
-      margin-top: 30px;
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-    }
-
-    .rewind-button {
-      min-height: 48px;
-      width: 100%;
-      padding: 12px 18px;
-      border: 1px solid var(--rose);
-      border-radius: 999px;
-      background: transparent;
-      color: var(--rose-dark);
-      font: 700 .92rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
-      cursor: pointer;
-      transition: color .2s ease, background .2s ease, transform .2s ease;
-    }
-
-    .rewind-button:hover { background: var(--rose); color: #fffaf6; transform: translateY(-1px); }
-    .rewind-button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
-    .rewind-button:disabled { cursor: default; opacity: .7; transform: none; }
-
-    .rewind-track {
-      height: 4px;
-      margin-top: 15px;
-      overflow: hidden;
-      border-radius: 999px;
-      background: var(--line);
-      opacity: 0;
-      transition: opacity .2s ease;
-    }
-
-    .rewind-track::before {
-      content: "";
-      display: block;
-      width: 0;
-      height: 100%;
-      border-radius: inherit;
-      background: var(--rose);
-    }
-
-    .rewinding .rewind-track { opacity: 1; }
-    .rewinding .rewind-track::before { animation: rewind-progress 2.1s cubic-bezier(.3,.7,.2,1) forwards; }
-
-    .rewind-status {
-      min-height: 1.5em;
-      margin: 12px 0 0 !important;
-      color: var(--muted);
-      font: .9rem/1.5 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
-      text-align: center;
-    }
-
-    @keyframes rewind-progress {
-      0% { width: 0; }
-      72% { width: 88%; }
-      100% { width: 100%; }
-    }
-
-    .envelope-front {
-      z-index: 3;
-      overflow: hidden;
-      background: #d7b2a3;
-      clip-path: polygon(0 37%, 50% 77%, 100% 37%, 100% 100%, 0 100%);
-    }
-
-    .envelope-front::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,.12), transparent 42%);
-    }
-
-    .seal {
-      position: absolute;
-      z-index: 5;
-      top: 45%;
-      left: 50%;
-      width: 58px;
-      height: 58px;
-      display: grid;
-      place-items: center;
-      border: 0;
-      border-radius: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--rose);
-      color: #fff8f2;
-      box-shadow: inset 0 0 0 3px rgba(255,255,255,.12), 0 5px 12px rgba(73,42,42,.2);
-      cursor: pointer;
-      transition: transform .25s ease, background .25s ease, opacity .35s ease;
-    }
-
-    .seal:hover { transform: translate(-50%, -50%) scale(1.06) rotate(-2deg); background: var(--rose-dark); }
-    .seal:focus-visible { outline: 3px solid var(--ink); outline-offset: 5px; }
-    .seal svg { width: 25px; height: 25px; }
-
-    .prompt {
-      margin: 22px 0 0;
-      color: var(--muted);
-      font-size: .92rem;
-      transition: opacity .35s ease;
-    }
-
-    .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
-    .opened .envelope-wrap { height: 980px; }
-    .case-active .envelope-wrap { height: 1580px; }
-    .opened .envelope { transform: translateY(75px); filter: none; }
-    .opened .flap { transform: rotateX(180deg); z-index: 1; }
-    .opened .seal { opacity: 0; pointer-events: none; }
-    .opened .prompt { opacity: 0; }
-    .opened .letter {
-      z-index: 6;
-      left: -14%;
-      right: -14%;
-      min-height: 610px;
-      opacity: 1;
-      transform: translateY(-28px) scale(1);
-      box-shadow: var(--shadow);
-    }
-    .opened .letter-content { opacity: 1; transform: translateY(0); }
-    .opened .envelope-back,
-    .opened .flap,
-    .opened .envelope-front {
-      opacity: 0;
-      transition: opacity .3s .55s ease;
-    }
-
-    .petal {
-      position: fixed;
-      z-index: -1;
-      width: 7px;
-      height: 12px;
-      border-radius: 80% 20% 70% 30%;
-      background: rgba(170,111,115,.26);
-      animation: drift var(--duration) linear forwards;
-    }
-
-    @keyframes drift {
-      from { transform: translate3d(var(--x), -20px, 0) rotate(0); opacity: 0; }
-      12% { opacity: 1; }
-      to { transform: translate3d(calc(var(--x) + var(--sway)), 105vh, 0) rotate(420deg); opacity: 0; }
-    }
-
-    @media (max-width: 560px) {
-      main { width: min(calc(100% - 22px), 760px); padding: 28px 0; }
-      .scene.opened { align-self: start; }
-      .envelope-wrap { width: 100%; height: 250px; }
-      .envelope { height: 225px; }
-      .letter { padding: 30px 24px; }
+    @media (max-width: 680px) {
+      main { width: min(100% - 18px, 980px); padding-top: 28px; }
+      .archive-intro { min-height: calc(100svh - 56px); }
+      .folder { transform: none; }
+      .folder::before { left: 14px; }
+      .classification { position: static; margin: 20px 0 0; transform: none; }
+      .case-header { grid-template-columns: 1fr; align-items: start; }
+      .case-state { justify-self: start; text-align: left; }
+      .briefing { grid-template-columns: 1fr; }
+      .plan { min-height: auto; }
+      .board-head { align-items: start; }
+      .evidence-grid { grid-template-columns: 1fr; }
+      .evidence:last-child { grid-column: auto; }
+      .timeline li { font-size: .5rem; }
+      .lab-head { grid-template-columns: 1fr; }
+      .scan-button { width: 100%; }
+      .scan-row { grid-template-columns: 1fr 52px; gap: 7px 10px; }
+      .scan-track { grid-column: 1 / -1; grid-row: 2; }
+      .scan-value { grid-column: 2; grid-row: 1; }
       .genre-options { grid-template-columns: 1fr; }
-      .opened .envelope-wrap { height: 1180px; }
-      .case-active .envelope-wrap { height: 1960px; }
-      .opened .letter {
-        left: 0;
-        right: 0;
-        min-height: 700px;
-        transform: translateY(-20px);
-      }
+      .verdict::after { position: static; display: inline-block; margin-top: 22px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
-      .petal { display: none; }
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: .01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: .01ms !important;
+        transition-delay: 0ms !important;
+      }
     }
   </style>
 </head>
 <body>
   <main>
-    <section class="scene" id="scene" aria-labelledby="letter-title">
-      <p class="eyebrow">Несколько честных слов</p>
+    <section class="archive-intro" id="archive-intro" aria-labelledby="archive-title">
+      <div class="folder">
+        <p class="file-code">Дело № 404 · доступ разрешён</p>
+        <h1 id="archive-title">Архив №404</h1>
+        <p class="subtitle">Дело о знакомстве, которое категорически отказалось начинаться нормально.</p>
+        <button class="access-button" id="open-case" type="button" aria-expanded="false">Рассекретить материалы</button>
+        <p class="classification">Не секретно · просто неловко</p>
+      </div>
+    </section>
 
-      <div class="envelope-wrap">
-        <div class="envelope">
-          <div class="envelope-back"></div>
-          <div class="flap"></div>
-          <article class="letter" aria-hidden="true" inert>
-            <div class="letter-content">
-              <h1 id="letter-title">Коротко: сюжет вышел странный.</h1>
-              <p><strong>План А:</strong> попросить твой Telegram у подруги. План А отклонили без права апелляции.</p>
-              <p><strong>План Б:</strong> включить режим частного детектива, потому что знакомство казалось слишком желанным для ранних титров.</p>
-              <p>Ниже — интерактивная реконструкция. Все совпадения с детективной комедией совершенно неслучайны.</p>
+    <article class="casebook" id="casebook" hidden inert>
+      <header class="case-header">
+        <div>
+          <p class="case-kicker">Материалы внутреннего расследования</p>
+          <h2>Операция «Можно было написать проще»</h2>
+        </div>
+        <div class="case-state">Статус<br>сюжет вышел из-под контроля</div>
+      </header>
 
-              <section class="case-file" aria-labelledby="case-title">
-                <p class="case-label">Дело № 404</p>
-                <h2 class="case-title" id="case-title">Открой улики в любом порядке</h2>
-                <ol class="evidence-list">
-                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
-                    <span class="evidence-number">01</span>
-                    <span><strong>Запрос через подругу</strong><span class="evidence-detail">Нормальный путь был испробован первым. Запрос отклонён без права апелляции.</span></span>
-                  </li>
-                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
-                    <span class="evidence-number">02</span>
-                    <span><strong>Контакты</strong><span class="evidence-detail">После отказа найден обходной маршрут. Мотивация — очень хотелось познакомиться. Метод — немного детективный.</span></span>
-                  </li>
-                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
-                    <span class="evidence-number">03</span>
-                    <span><strong>Адрес</strong><span class="evidence-detail">Был знаком второй стороне не случайно: когда-то в этой квартире жила твоя подруга.</span></span>
-                  </li>
-                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
-                    <span class="evidence-number">04</span>
-                    <span><strong>Дверь</strong><span class="evidence-detail">В тот период однажды прошла внеплановый тест на вскрытие. Похоже, детективная линия появилась в этой истории ещё до моего участия.</span></span>
-                  </li>
-                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
-                    <span class="evidence-number">05</span>
-                    <span><strong>Запись разговора</strong><span class="evidence-detail">Сохранила контрольную копию сюжета и, надеюсь, вернула тебе немного спокойствия.</span></span>
-                  </li>
-                </ol>
-                <p class="case-progress"><span id="evidence-count">0</span> из 5 улик изучено</p>
-                <div class="genre-picker" id="genre-picker" hidden>
-                  <p class="genre-title">Все улики собраны. Выбери жанр финала:</p>
-                  <div class="genre-options">
-                    <button class="genre-button" type="button" data-genre="romcom">Ромком</button>
-                    <button class="genre-button" type="button" data-genre="detective">Детектив</button>
-                    <button class="genre-button" type="button" data-genre="comedy">Комедия ошибок</button>
-                  </div>
-                </div>
-                <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
-              </section>
+      <section class="briefing" aria-label="Краткая хронология">
+        <div class="plan">
+          <p class="plan-label">План А · официальный канал</p>
+          <p>Попросить твой Telegram у подруги. План завершился там же, где начался: у подруги.</p>
+        </div>
+        <div class="plan">
+          <p class="plan-label">План Б · авторская импровизация</p>
+          <p>Найти контакты самостоятельно, потому что знакомство казалось слишком желанным для ранних титров.</p>
+        </div>
+      </section>
 
-              <div class="rewind" id="rewind">
-                <button class="rewind-button" id="rewind-button" type="button">Открыть режиссёрскую версию</button>
-                <div class="rewind-track" aria-hidden="true"></div>
-                <p class="rewind-status" id="rewind-status" role="status" aria-live="polite"></p>
-              </div>
-            </div>
-          </article>
-          <div class="envelope-front"></div>
+      <section class="board" aria-labelledby="board-title">
+        <div class="board-head">
+          <div>
+            <p class="board-label">Доска расследования</p>
+            <h3 id="board-title">Изучи материалы в любом порядке</h3>
+          </div>
+          <p class="progress"><strong><span id="evidence-count">0</span>/5</strong>улик изучено</p>
         </div>
 
-        <button class="seal" id="open-letter" type="button" aria-label="Открыть письмо" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="M12 20.2 4.8 13.4A4.8 4.8 0 0 1 11.6 6.6L12 7l.4-.4a4.8 4.8 0 0 1 6.8 6.8L12 20.2Z" fill="currentColor"/>
-          </svg>
-        </button>
-      </div>
+        <ol class="timeline" aria-label="Хронология дела">
+          <li data-node="friend"><span class="timeline-dot">✓</span>Запрос</li>
+          <li data-node="contacts"><span class="timeline-dot">✓</span>Поиск</li>
+          <li data-node="address"><span class="timeline-dot">✓</span>Адрес</li>
+          <li data-node="door"><span class="timeline-dot">✓</span>Дверь</li>
+          <li data-node="record"><span class="timeline-dot">✓</span>Запись</li>
+        </ol>
 
-      <p class="prompt" id="prompt">Нажми, чтобы открыть письмо</p>
-    </section>
+        <div class="evidence-grid">
+          <button class="evidence" type="button" data-evidence="friend" aria-expanded="false">
+            <span class="evidence-top">
+              <span class="evidence-number">01</span>
+              <span><span class="evidence-title">Запрос через подругу</span><span class="evidence-hint">Нажать для рассекречивания</span></span>
+            </span>
+            <span class="evidence-body"><span>
+              <span class="evidence-detail">Нормальный путь был испробован первым. Запрос отклонён без права апелляции.</span>
+              <span class="system-note">Статус: отклонён. Причина: засекречена даже от сценаристов.</span>
+            </span></span>
+            <span class="stamp">Проверено</span>
+          </button>
+
+          <button class="evidence" type="button" data-evidence="contacts" aria-expanded="false">
+            <span class="evidence-top">
+              <span class="evidence-number">02</span>
+              <span><span class="evidence-title">Самостоятельный поиск</span><span class="evidence-hint">Нажать для рассекречивания</span></span>
+            </span>
+            <span class="evidence-body"><span>
+              <span class="evidence-detail">После отказа был найден обходной маршрут. Мотивация — очень хотелось познакомиться. Метод — несколько детективный.</span>
+              <span class="system-note">Уровень переусложнения: впечатляющий.</span>
+            </span></span>
+            <span class="stamp">Мотив найден</span>
+          </button>
+
+          <button class="evidence" type="button" data-evidence="address" aria-expanded="false">
+            <span class="evidence-top">
+              <span class="evidence-number">03</span>
+              <span><span class="evidence-title">Знакомый адрес</span><span class="evidence-hint">Нажать для рассекречивания</span></span>
+            </span>
+            <span class="evidence-body"><span>
+              <span class="evidence-detail">Был известен второй стороне не случайно: когда-то в этой квартире жила твоя подруга.</span>
+              <span class="system-note">Совпадение объяснено. Отдел паранойи распущен до следующей серии.</span>
+            </span></span>
+            <span class="stamp">Объяснено</span>
+          </button>
+
+          <button class="evidence" type="button" data-evidence="door" aria-expanded="false">
+            <span class="evidence-top">
+              <span class="evidence-number">04</span>
+              <span><span class="evidence-title">Показания двери</span><span class="evidence-hint">Нажать для рассекречивания</span></span>
+            </span>
+            <span class="evidence-body"><span>
+              <span class="evidence-detail">В тот период дверь однажды прошла внеплановый тест на вскрытие.</span>
+              <span class="system-note">Детективная линия существовала ещё до появления главного подозреваемого.</span>
+            </span></span>
+            <span class="stamp">Сюжетный поворот</span>
+          </button>
+
+          <button class="evidence" type="button" data-evidence="record" aria-expanded="false">
+            <span class="evidence-top">
+              <span class="evidence-number">05</span>
+              <span><span class="evidence-title">Запись разговора</span><span class="evidence-hint">Нажать для рассекречивания</span></span>
+            </span>
+            <span class="evidence-body"><span>
+              <span class="evidence-detail">Контрольная копия разговора осталась у тебя. Надеюсь, это вернуло хотя бы немного спокойствия и контроля над ситуацией.</span>
+              <span class="system-note">Приобщена к делу. Сюжет лучше не стал, зато появился официальный архив.</span>
+            </span></span>
+            <span class="stamp">В архив</span>
+          </button>
+        </div>
+
+        <p class="chronology-status" id="chronology-status" role="status" aria-live="polite">Хронология не восстановлена · требуется ещё 5 материалов</p>
+      </section>
+
+      <section class="lab" id="lab" hidden aria-labelledby="lab-title">
+        <div class="lab-head">
+          <div>
+            <h3 id="lab-title">Криминалистический анализ намерений</h3>
+            <p class="lab-copy">Совершенно научная процедура. Сертификат лаборатории был красиво распечатан дома.</p>
+          </div>
+          <button class="scan-button" id="scan-button" type="button">Запустить экспертизу</button>
+        </div>
+
+        <div class="scan-panel" aria-live="polite">
+          <div class="scan-row" style="--value: 96%">
+            <span>Романтическая мотивация</span><span class="scan-track"><span class="scan-fill"></span></span><span class="scan-value">96%</span>
+          </div>
+          <div class="scan-row alert" style="--value: 11%">
+            <span>Умение действовать просто</span><span class="scan-track"><span class="scan-fill"></span></span><span class="scan-value">11%</span>
+          </div>
+          <div class="scan-row safe" style="--value: 2%">
+            <span>Злой умысел</span><span class="scan-track"><span class="scan-fill"></span></span><span class="scan-value">Не найден</span>
+          </div>
+          <div class="scan-row alert" style="--value: 94%">
+            <span>Сценарное переусложнение</span><span class="scan-track"><span class="scan-fill"></span></span><span class="scan-value">Критическое</span>
+          </div>
+          <p class="scan-log" id="scan-log">Ожидание образцов здравого смысла…</p>
+        </div>
+      </section>
+
+      <section class="finale" id="finale" hidden aria-labelledby="finale-title">
+        <p class="finale-heading" id="finale-title">Экспертиза завершена · выбери жанр официального заключения</p>
+        <div class="genre-options">
+          <button class="genre-button" type="button" data-genre="romcom">Ромком</button>
+          <button class="genre-button" type="button" data-genre="detective">Детектив</button>
+          <button class="genre-button" type="button" data-genre="comedy">Комедия ошибок</button>
+        </div>
+        <div class="verdict" id="verdict" role="status" aria-live="polite">
+          <p class="verdict-label" id="verdict-label"></p>
+          <p class="verdict-text" id="verdict-text"></p>
+          <p class="case-closed">Мотив: познакомиться. Метод: спорный по жанру. Итог: одно нормальное извинение без регистрации, подписки и требований к ответу.</p>
+        </div>
+      </section>
+
+      <p class="privacy-note">Никаких форм · никакой аналитики · никаких данных о просмотре</p>
+    </article>
   </main>
 
   <script>
-    const scene = document.querySelector('#scene');
-    const button = document.querySelector('#open-letter');
-    const letter = document.querySelector('.letter');
-    const rewind = document.querySelector('#rewind');
-    const rewindButton = document.querySelector('#rewind-button');
-    const rewindStatus = document.querySelector('#rewind-status');
-    const evidence = [...document.querySelectorAll('.evidence')];
+    const page = document.body;
+    const intro = document.querySelector('#archive-intro');
+    const openCaseButton = document.querySelector('#open-case');
+    const casebook = document.querySelector('#casebook');
+    const evidenceCards = [...document.querySelectorAll('.evidence')];
     const evidenceCount = document.querySelector('#evidence-count');
-    const genrePicker = document.querySelector('#genre-picker');
+    const chronologyStatus = document.querySelector('#chronology-status');
+    const lab = document.querySelector('#lab');
+    const scanButton = document.querySelector('#scan-button');
+    const scanLog = document.querySelector('#scan-log');
+    const finale = document.querySelector('#finale');
     const genreButtons = [...document.querySelectorAll('.genre-button')];
     const verdict = document.querySelector('#verdict');
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const verdictLabel = document.querySelector('#verdict-label');
+    const verdictText = document.querySelector('#verdict-text');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const params = new URLSearchParams(window.location.search);
 
-    function addPetals() {
-      if (reducedMotion.matches) return;
-      for (let index = 0; index < 12; index += 1) {
-        const petal = document.createElement('span');
-        petal.className = 'petal';
-        petal.style.setProperty('--x', `${Math.random() * 100}vw`);
-        petal.style.setProperty('--sway', `${Math.random() * 80 - 40}px`);
-        petal.style.setProperty('--duration', `${5 + Math.random() * 4}s`);
-        petal.style.animationDelay = `${Math.random() * 1.2}s`;
-        document.body.appendChild(petal);
-        petal.addEventListener('animationend', () => petal.remove());
+    let revealedCount = 0;
+    let scanStarted = false;
+
+    const verdicts = {
+      romcom: {
+        label: 'Официальное заключение · романтическая комедия',
+        text: 'Очень сложный способ сообщить, что девушка понравилась. Продюсеры требуют сократить бюджет расследования.'
+      },
+      detective: {
+        label: 'Официальное заключение · детектив',
+        text: 'Мотив подтверждён. Метод вызывает вопросы. Преступление против простоты раскрыто полностью.'
+      },
+      comedy: {
+        label: 'Официальное заключение · комедия ошибок',
+        text: 'Никто не планировал мини-сериал. Тем не менее первый сезон уже снят, а сценарий писал Гай Ричи на минималках.'
       }
+    };
+
+    function openCase() {
+      if (page.classList.contains('opened')) return;
+      page.classList.add('opened');
+      openCaseButton.setAttribute('aria-expanded', 'true');
+      casebook.hidden = false;
+      casebook.removeAttribute('inert');
+      window.setTimeout(() => {
+        intro.hidden = true;
+        document.querySelector('.case-header').focus?.();
+      }, reducedMotion ? 0 : 500);
     }
-
-    button.addEventListener('click', () => {
-      scene.classList.add('opened');
-      button.setAttribute('aria-expanded', 'true');
-      letter.setAttribute('aria-hidden', 'false');
-      letter.removeAttribute('inert');
-      addPetals();
-      window.setTimeout(() => {
-        document.querySelector('.letter').focus?.();
-      }, reducedMotion.matches ? 0 : 900);
-    }, { once: true });
-
-    rewindButton.addEventListener('click', () => {
-      rewind.classList.add('rewinding');
-      rewindButton.disabled = true;
-      rewindButton.textContent = 'Восстанавливаю удалённые сцены…';
-      rewindStatus.textContent = 'Добавляю романтическую мотивацию…';
-
-      window.setTimeout(() => {
-        rewindStatus.textContent = 'Объясняю сюжетный обходной маршрут…';
-      }, reducedMotion.matches ? 0 : 1300);
-
-      window.setTimeout(() => {
-        rewindButton.textContent = 'Режиссёрская версия готова';
-        rewindStatus.textContent = 'Теперь хотя бы понятно, почему история пошла не по плану.';
-      }, reducedMotion.matches ? 0 : 2200);
-    }, { once: true });
-
-    let revealedEvidence = 0;
 
     function revealEvidence(card) {
       if (card.classList.contains('revealed')) return;
-
-      scene.classList.add('case-active');
       card.classList.add('revealed');
       card.setAttribute('aria-expanded', 'true');
-      revealedEvidence += 1;
-      evidenceCount.textContent = revealedEvidence;
+      card.querySelector('.evidence-hint').textContent = 'Материал рассекречен';
+      document.querySelector(`[data-node="${card.dataset.evidence}"]`).classList.add('found');
+      revealedCount += 1;
+      evidenceCount.textContent = revealedCount;
 
-      if (revealedEvidence === evidence.length) {
-        genrePicker.hidden = false;
-        addPetals();
+      const remaining = evidenceCards.length - revealedCount;
+      if (remaining > 0) {
+        chronologyStatus.textContent = `Хронология не восстановлена · требуется ещё ${remaining} ${remaining === 1 ? 'материал' : 'материала'}`;
+        return;
       }
+
+      chronologyStatus.textContent = 'Хронология восстановлена. Здравый смысл — частично.';
+      chronologyStatus.classList.add('complete');
+      lab.hidden = false;
     }
 
-    evidence.forEach((card) => {
-      card.addEventListener('click', () => revealEvidence(card));
-      card.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          revealEvidence(card);
-        }
-      });
-    });
+    function startScan() {
+      if (scanStarted) return;
+      scanStarted = true;
+      lab.classList.add('scanning');
+      scanButton.disabled = true;
+      scanButton.textContent = 'Экспертиза выполняется…';
+      scanLog.textContent = 'Сверяем мотивы с методами…';
 
-    const genreVerdicts = {
-      romcom: 'Ромком: герой выбрал крайне сложный способ сказать «ты мне понравилась». Бюджет ушёл на расследование.',
-      detective: 'Детектив: мотив установлен — очень хотелось познакомиться. Улики собраны, злой умысел в сценарий не завезли.',
-      comedy: 'Комедия ошибок: намерения романтические, исполнение детективное, а сценарий писал Гай Ричи на минималках.'
-    };
+      window.setTimeout(() => {
+        scanLog.textContent = 'Ищем злой умысел. Поиск подозрительно быстро завершён…';
+      }, reducedMotion ? 0 : 900);
 
-    genreButtons.forEach((genreButton) => {
-      genreButton.addEventListener('click', () => {
-        genreButtons.forEach((item) => item.classList.remove('selected'));
-        genreButton.classList.add('selected');
-        verdict.textContent = genreVerdicts[genreButton.dataset.genre];
-        verdict.classList.add('visible');
-        addPetals();
-      });
-    });
-
-    if (new URLSearchParams(window.location.search).has('open')) {
-      window.setTimeout(() => button.click(), 100);
+      window.setTimeout(() => {
+        lab.classList.remove('scanning');
+        lab.classList.add('scanned');
+        scanButton.textContent = 'Экспертиза завершена';
+        scanLog.textContent = 'Подозреваемый хотел познакомиться и зачем-то превратил это в пилотную серию.';
+        finale.hidden = false;
+      }, reducedMotion ? 0 : 1900);
     }
 
-    if (new URLSearchParams(window.location.search).has('rewind')) {
-      window.setTimeout(() => rewindButton.click(), 1000);
+    function chooseGenre(button) {
+      const result = verdicts[button.dataset.genre];
+      genreButtons.forEach((item) => item.classList.toggle('selected', item === button));
+      verdictLabel.textContent = result.label;
+      verdictText.textContent = result.text;
+      verdict.classList.add('visible');
     }
 
-    if (new URLSearchParams(window.location.search).has('case')) {
-      evidence.forEach((card, index) => {
-        window.setTimeout(() => card.click(), 900 + index * 500);
+    openCaseButton.addEventListener('click', openCase);
+    evidenceCards.forEach((card) => card.addEventListener('click', () => revealEvidence(card)));
+    scanButton.addEventListener('click', startScan);
+    genreButtons.forEach((button) => button.addEventListener('click', () => chooseGenre(button)));
+
+    if (params.has('open') || params.has('case') || params.has('scan') || params.has('genre')) {
+      openCase();
+    }
+
+    if (params.has('case') || params.has('scan') || params.has('genre')) {
+      evidenceCards.forEach((card, index) => {
+        window.setTimeout(() => card.click(), reducedMotion ? 0 : 450 + index * 260);
       });
-      window.setTimeout(() => document.querySelector('[data-genre="comedy"]').click(), 3600);
+    }
+
+    if (params.has('scan') || params.has('genre')) {
+      window.setTimeout(() => scanButton.click(), reducedMotion ? 0 : 2000);
+    }
+
+    if (params.has('genre')) {
+      window.setTimeout(() => {
+        const requestedGenre = params.get('genre');
+        const button = document.querySelector(`[data-genre="${requestedGenre}"]`) || document.querySelector('[data-genre="comedy"]');
+        button.click();
+      }, reducedMotion ? 0 : 4200);
     }
   </script>
 </body>
