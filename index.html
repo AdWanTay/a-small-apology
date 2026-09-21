@@ -54,7 +54,101 @@
       mix-blend-mode: screen;
     }
 
-    button { font: inherit; }
+    button, input { font: inherit; }
+
+    .access-gate {
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px 14px;
+    }
+
+    .access-panel {
+      position: relative;
+      width: min(100%, 460px);
+      padding: clamp(30px, 7vw, 52px);
+      color: var(--ink);
+      background: var(--paper-deep);
+      border-radius: 3px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .access-panel::before {
+      content: "ЗАКРЫТЫЙ АРХИВ";
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      padding: 7px 11px;
+      border: 2px solid var(--red-dark);
+      background: var(--paper-deep);
+      color: var(--red-dark);
+      font: 900 .62rem/1 var(--mono);
+      letter-spacing: .12em;
+      transform: translateX(-50%) rotate(-2deg);
+      white-space: nowrap;
+    }
+
+    .access-kicker {
+      margin: 0 0 12px;
+      color: var(--red-dark);
+      font: 800 .7rem/1.3 var(--mono);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+
+    .access-panel h1 {
+      margin: 0;
+      font: 400 clamp(2.3rem, 9vw, 4rem)/.95 var(--serif);
+      letter-spacing: -.045em;
+    }
+
+    .access-copy {
+      margin: 16px 0 24px;
+      color: #5b5245;
+      font: 400 1rem/1.55 var(--serif);
+    }
+
+    .password-form { display: grid; gap: 10px; }
+
+    .password-input {
+      min-height: 50px;
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid rgba(58,50,39,.34);
+      border-radius: 2px;
+      outline: none;
+      background: #fff8e8;
+      color: var(--ink);
+      font: 700 1rem/1.2 var(--mono);
+      letter-spacing: .14em;
+      text-align: center;
+    }
+
+    .password-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(156,48,41,.15); }
+
+    .password-submit {
+      min-height: 50px;
+      border: 1px solid var(--red-dark);
+      border-radius: 2px;
+      background: var(--red);
+      color: #fff8e9;
+      font: 800 .74rem/1.2 var(--mono);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .password-error {
+      min-height: 1.4em;
+      margin: 2px 0 0;
+      color: var(--red-dark);
+      font: 800 .68rem/1.4 var(--mono);
+      text-transform: uppercase;
+    }
+
+    body:not(.locked) .access-gate { display: none; }
+    body.locked main { display: none; }
 
     main {
       width: min(100% - 28px, 980px);
@@ -628,8 +722,22 @@
     }
   </style>
 </head>
-<body>
-  <main>
+<body class="locked">
+  <section class="access-gate" id="access-gate" aria-labelledby="access-title">
+    <div class="access-panel">
+      <p class="access-kicker">Дело №404 · ограниченный доступ</p>
+      <h1 id="access-title">Введите пароль</h1>
+      <p class="access-copy">Материалы выдаются только участникам сюжета.</p>
+      <form class="password-form" id="password-form">
+        <label for="password" hidden>Пароль</label>
+        <input class="password-input" id="password" name="password" type="password" inputmode="numeric" pattern="[0-9]*" autocomplete="current-password" placeholder="••••••••" required autofocus>
+        <button class="password-submit" type="submit">Получить доступ</button>
+        <p class="password-error" id="password-error" role="alert" aria-live="polite"></p>
+      </form>
+    </div>
+  </section>
+
+  <main id="main-content" inert aria-hidden="true">
     <section class="archive-intro" id="archive-intro" aria-labelledby="archive-title">
       <div class="folder">
         <p class="file-code">Дело № 404 · доступ разрешён</p>
@@ -787,6 +895,12 @@
   </main>
 
   <script>
+    const passwordHash = '42161b2abd89dcd14147dee263b32bae7bdc2033c37e462fd3979dc8bbdb93a2';
+    const accessGate = document.querySelector('#access-gate');
+    const passwordForm = document.querySelector('#password-form');
+    const passwordInput = document.querySelector('#password');
+    const passwordError = document.querySelector('#password-error');
+    const mainContent = document.querySelector('#main-content');
     const page = document.body;
     const intro = document.querySelector('#archive-intro');
     const openCaseButton = document.querySelector('#open-case');
@@ -822,6 +936,31 @@
         text: 'Никто не планировал мини-сериал. Тем не менее первый сезон уже снят, а сценарий писал Гай Ричи на минималках.'
       }
     };
+
+    async function sha256(value) {
+      const bytes = new TextEncoder().encode(value);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+    }
+
+    passwordForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      passwordError.textContent = '';
+      const submittedHash = await sha256(passwordInput.value);
+
+      if (submittedHash !== passwordHash) {
+        passwordInput.value = '';
+        passwordInput.focus();
+        passwordError.textContent = 'Пароль не подошёл. Доступ к делу отклонён.';
+        return;
+      }
+
+      page.classList.remove('locked');
+      mainContent.removeAttribute('inert');
+      mainContent.setAttribute('aria-hidden', 'false');
+      accessGate.setAttribute('aria-hidden', 'true');
+      openCaseButton.focus();
+    });
 
     function openCase() {
       if (page.classList.contains('opened')) return;
