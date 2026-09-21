@@ -179,6 +179,108 @@
       font-style: italic;
     }
 
+    .case-file {
+      margin-top: 30px;
+      padding: 22px;
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      background: rgba(245, 239, 231, .48);
+    }
+
+    .case-label {
+      margin: 0 0 8px !important;
+      color: var(--rose-dark);
+      font: 800 .7rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .case-title {
+      margin: 0 0 18px;
+      font-family: Iowan Old Style, Baskerville, Georgia, serif;
+      font-size: 1.25rem;
+      font-weight: 400;
+    }
+
+    .evidence-list {
+      display: grid;
+      gap: 10px;
+      margin: 0 0 16px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .evidence {
+      display: none;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 13px 14px;
+      border-radius: 12px;
+      background: var(--paper);
+      box-shadow: 0 3px 10px rgba(60,40,30,.05);
+      animation: evidence-in .45s cubic-bezier(.2,.8,.2,1) both;
+    }
+
+    .evidence.revealed { display: grid; }
+
+    .evidence-number {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      color: var(--rose-dark);
+      font: 800 .76rem/1 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .evidence strong {
+      display: block;
+      margin-bottom: 3px;
+      font: 700 .92rem/1.3 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .evidence span:last-child {
+      color: var(--muted);
+      font: .86rem/1.5 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    .case-button {
+      min-height: 46px;
+      width: 100%;
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--paper);
+      font: 700 .9rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      cursor: pointer;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+
+    .case-button:hover { transform: translateY(-1px); }
+    .case-button:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
+    .case-button:disabled { cursor: default; opacity: .72; transform: none; }
+
+    .verdict {
+      display: none;
+      margin: 16px 0 0 !important;
+      padding-top: 15px;
+      border-top: 1px solid var(--line);
+      color: var(--ink);
+      font: 700 .9rem/1.55 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      text-align: center;
+      animation: evidence-in .45s ease both;
+    }
+
+    .verdict.visible { display: block; }
+
+    @keyframes evidence-in {
+      from { opacity: 0; transform: translateY(7px) rotate(-.3deg); }
+      to { opacity: 1; transform: translateY(0) rotate(0); }
+    }
+
     .rewind {
       margin-top: 30px;
       padding-top: 24px;
@@ -284,6 +386,7 @@
 
     .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
     .opened .envelope-wrap { height: 680px; }
+    .case-active .envelope-wrap { height: 1040px; }
     .opened .envelope { transform: translateY(75px); filter: none; }
     .opened .flap { transform: rotateX(180deg); z-index: 1; }
     .opened .seal { opacity: 0; pointer-events: none; }
@@ -328,6 +431,7 @@
       .envelope { height: 225px; }
       .letter { padding: 30px 24px; }
       .opened .envelope-wrap { height: 780px; }
+      .case-active .envelope-wrap { height: 1240px; }
       .opened .letter {
         left: 0;
         right: 0;
@@ -354,10 +458,31 @@
           <article class="letter" aria-hidden="true" inert>
             <div class="letter-content">
               <h1 id="letter-title">Мне важно извиниться.</h1>
-              <p>Я нашёл твои контакты способом, который мог показаться неожиданным. В моей голове это выглядело гораздо менее странно. После повторного просмотра сценария стало ясно: автор немного переоценил сюжет.</p>
-              <p>Без длинных оправданий: мне стоило сначала подумать, насколько это будет комфортно для тебя.</p>
+              <p>Кажется, у нашей истории сценарист немного увлёкся. Ты знаешь, где я живу, моя дверь однажды прошла внеплановый стресс-тест — хотя справедливости ради, тогда в квартире жила твоя подруга.</p>
+              <p>А я зачем-то включил режим частного детектива и нашёл твои контакты. В моей голове это выглядело гораздо менее странно, чем звучит сейчас.</p>
               <p>Прости, пожалуйста.</p>
               <div class="signature">С искренним «прости».</div>
+
+              <section class="case-file" aria-labelledby="case-title">
+                <p class="case-label">Дело № 404</p>
+                <h2 class="case-title" id="case-title">Материалы самого нестандартного знакомства</h2>
+                <ol class="evidence-list">
+                  <li class="evidence">
+                    <span class="evidence-number">01</span>
+                    <span><strong>Адрес</strong>Уже известен второй стороне. Геолокация в этом сюжете явно работает слишком хорошо.</span>
+                  </li>
+                  <li class="evidence">
+                    <span class="evidence-number">02</span>
+                    <span><strong>Дверь</strong>Пережила внеплановый стресс-тест. Смягчающее обстоятельство: тогда за ней жила твоя подруга.</span>
+                  </li>
+                  <li class="evidence">
+                    <span class="evidence-number">03</span>
+                    <span><strong>Контакты</strong>Найдены в режиме частного детектива. Здесь подозреваемый признаёт: получилось странновато.</span>
+                  </li>
+                </ol>
+                <button class="case-button" id="case-button" type="button">Открыть первую улику</button>
+                <p class="verdict" id="verdict">Вердикт: сценарий знакомства писал Гай Ричи на минималках. Но за мою часть сюжета извинение остаётся в силе.</p>
+              </section>
 
               <div class="rewind" id="rewind">
                 <button class="rewind-button" id="rewind-button" type="button">Попробовать откатить неловкий момент</button>
@@ -387,6 +512,9 @@
     const rewind = document.querySelector('#rewind');
     const rewindButton = document.querySelector('#rewind-button');
     const rewindStatus = document.querySelector('#rewind-status');
+    const caseButton = document.querySelector('#case-button');
+    const evidence = [...document.querySelectorAll('.evidence')];
+    const verdict = document.querySelector('#verdict');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function addPetals() {
@@ -430,12 +558,33 @@
       }, reducedMotion.matches ? 0 : 2200);
     }, { once: true });
 
+    let evidenceIndex = 0;
+    caseButton.addEventListener('click', () => {
+      scene.classList.add('case-active');
+      evidence[evidenceIndex].classList.add('revealed');
+      evidenceIndex += 1;
+
+      if (evidenceIndex < evidence.length) {
+        caseButton.textContent = `Открыть улику ${evidenceIndex + 1} из ${evidence.length}`;
+        return;
+      }
+
+      caseButton.textContent = 'Все улики изучены';
+      caseButton.disabled = true;
+      verdict.classList.add('visible');
+      addPetals();
+    });
+
     if (new URLSearchParams(window.location.search).has('open')) {
       window.setTimeout(() => button.click(), 100);
     }
 
     if (new URLSearchParams(window.location.search).has('rewind')) {
       window.setTimeout(() => rewindButton.click(), 1000);
+    }
+
+    if (new URLSearchParams(window.location.search).has('case')) {
+      [900, 1400, 1900].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
     }
   </script>
 </body>
