@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5efe7">
+  <meta name="description" content="Небольшое личное письмо с извинением.">
+  <title>Небольшое письмо</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fffdf8;
+      --paper-deep: #f5efe7;
+      --ink: #2d2926;
+      --muted: #746b64;
+      --line: #ddd2c7;
+      --rose: #aa6f73;
+      --rose-dark: #805256;
+      --shadow: 0 28px 70px rgba(69, 51, 41, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 20% 12%, rgba(255,255,255,.85) 0 7%, transparent 31%),
+        radial-gradient(circle at 82% 84%, rgba(208,174,165,.18), transparent 32%),
+        var(--paper-deep);
+      color: var(--ink);
+      font-family: Avenir, "Avenir Next", "Segoe UI", sans-serif;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .3;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.08'/%3E%3C/svg%3E");
+      mix-blend-mode: multiply;
+    }
+
+    main {
+      width: min(100% - 32px, 760px);
+      min-height: 100svh;
+      margin: 0 auto;
+      display: grid;
+      place-items: center;
+      padding: 48px 0;
+    }
+
+    .scene {
+      width: 100%;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      transition: opacity .5s ease, transform .5s ease;
+    }
+
+    .envelope-wrap {
+      position: relative;
+      width: min(92vw, 470px);
+      height: 300px;
+      margin: 0 auto;
+      perspective: 1100px;
+      transition: height .9s cubic-bezier(.22,.7,.2,1);
+    }
+
+    .envelope {
+      position: absolute;
+      inset: 35px 0 auto;
+      height: 265px;
+      filter: drop-shadow(0 24px 28px rgba(73, 52, 40, .18));
+      transition: transform .9s cubic-bezier(.22,.7,.2,1), opacity .6s ease;
+    }
+
+    .envelope-back,
+    .envelope-front {
+      position: absolute;
+      inset: 0;
+      border-radius: 8px;
+    }
+
+    .envelope-back {
+      background: #d8b6a7;
+      border: 1px solid rgba(97,63,52,.1);
+    }
+
+    .flap {
+      position: absolute;
+      z-index: 4;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 58%;
+      transform-origin: top;
+      transform-style: preserve-3d;
+      transition: transform .75s cubic-bezier(.4,0,.2,1);
+    }
+
+    .flap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: #e4c9bd;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      backface-visibility: hidden;
+    }
+
+    .letter {
+      position: absolute;
+      z-index: 2;
+      left: 6%;
+      right: 6%;
+      top: 16px;
+      min-height: 230px;
+      padding: 38px 38px 34px;
+      overflow: hidden;
+      text-align: left;
+      background: var(--paper);
+      border: 1px solid rgba(102,75,62,.09);
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(60,40,30,.08);
+      opacity: 0;
+      transform: translateY(74px) scale(.94);
+      transition:
+        opacity .25s ease,
+        left .7s ease,
+        right .7s ease,
+        transform 1s cubic-bezier(.2,.75,.18,1),
+        min-height .9s cubic-bezier(.22,.7,.2,1),
+        padding .8s ease;
+    }
+
+    .letter-content {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .65s .55s ease, transform .65s .55s ease;
+    }
+
+    .letter h1 {
+      max-width: 540px;
+      margin: 0 0 26px;
+      font-family: Iowan Old Style, Baskerville, Georgia, serif;
+      font-size: clamp(2rem, 7vw, 3.35rem);
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .letter p {
+      margin: 0 0 18px;
+      font-family: Iowan Old Style, Baskerville, Georgia, serif;
+      font-size: clamp(1.05rem, 3vw, 1.24rem);
+      line-height: 1.68;
+      text-wrap: pretty;
+    }
+
+    .letter .quiet { color: var(--muted); }
+
+    .signature {
+      margin-top: 30px;
+      color: var(--rose-dark);
+      font-family: Iowan Old Style, Baskerville, Georgia, serif;
+      font-size: 1.25rem;
+      font-style: italic;
+    }
+
+    .envelope-front {
+      z-index: 3;
+      overflow: hidden;
+      background: #d7b2a3;
+      clip-path: polygon(0 37%, 50% 77%, 100% 37%, 100% 100%, 0 100%);
+    }
+
+    .envelope-front::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.12), transparent 42%);
+    }
+
+    .seal {
+      position: absolute;
+      z-index: 5;
+      top: 45%;
+      left: 50%;
+      width: 58px;
+      height: 58px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--rose);
+      color: #fff8f2;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.12), 0 5px 12px rgba(73,42,42,.2);
+      cursor: pointer;
+      transition: transform .25s ease, background .25s ease, opacity .35s ease;
+    }
+
+    .seal:hover { transform: translate(-50%, -50%) scale(1.06) rotate(-2deg); background: var(--rose-dark); }
+    .seal:focus-visible { outline: 3px solid var(--ink); outline-offset: 5px; }
+    .seal svg { width: 25px; height: 25px; }
+
+    .prompt {
+      margin: 22px 0 0;
+      color: var(--muted);
+      font-size: .92rem;
+      transition: opacity .35s ease;
+    }
+
+    .afterword {
+      max-width: 510px;
+      margin: 34px auto 0;
+      color: var(--muted);
+      font-size: .86rem;
+      line-height: 1.6;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: opacity .6s 1s ease, transform .6s 1s ease;
+    }
+
+    .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
+    .opened .envelope-wrap { height: 680px; }
+    .opened .envelope { transform: translateY(75px); filter: none; }
+    .opened .flap { transform: rotateX(180deg); z-index: 1; }
+    .opened .seal { opacity: 0; pointer-events: none; }
+    .opened .prompt { opacity: 0; }
+    .opened .letter {
+      z-index: 6;
+      left: -14%;
+      right: -14%;
+      min-height: 610px;
+      opacity: 1;
+      transform: translateY(-28px) scale(1);
+      box-shadow: var(--shadow);
+    }
+    .opened .letter-content { opacity: 1; transform: translateY(0); }
+    .opened .afterword { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    .petal {
+      position: fixed;
+      z-index: -1;
+      width: 7px;
+      height: 12px;
+      border-radius: 80% 20% 70% 30%;
+      background: rgba(170,111,115,.26);
+      animation: drift var(--duration) linear forwards;
+    }
+
+    @keyframes drift {
+      from { transform: translate3d(var(--x), -20px, 0) rotate(0); opacity: 0; }
+      12% { opacity: 1; }
+      to { transform: translate3d(calc(var(--x) + var(--sway)), 105vh, 0) rotate(420deg); opacity: 0; }
+    }
+
+    @media (max-width: 560px) {
+      main { width: min(100% - 22px, 760px); padding: 28px 0; }
+      .envelope-wrap { width: 100%; height: 250px; }
+      .envelope { height: 225px; }
+      .letter { padding: 30px 24px; }
+      .opened .envelope-wrap { height: 780px; }
+      .opened .letter {
+        left: 0;
+        right: 0;
+        min-height: 700px;
+        transform: translateY(-20px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-delay: 0ms !important; transition-duration: .01ms !important; transition-delay: 0ms !important; }
+      .petal { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="scene" id="scene" aria-labelledby="letter-title">
+      <p class="eyebrow">Несколько честных слов</p>
+
+      <div class="envelope-wrap">
+        <div class="envelope" aria-hidden="true">
+          <div class="envelope-back"></div>
+          <div class="flap"></div>
+          <article class="letter">
+            <div class="letter-content">
+              <h1 id="letter-title">Мне важно извиниться.</h1>
+              <p>Я нашёл твои контакты способом, который мог показаться неожиданным и нарушить твоё личное пространство. Мне стоило сначала подумать о том, насколько это будет комфортно для тебя.</p>
+              <p>Моё желание познакомиться не отменяет твоих границ. Я не хочу ставить тебя в неловкое положение и ничего от тебя не жду.</p>
+              <p class="quiet">Если ты не захочешь отвечать или продолжать общение — я пойму и полностью это уважаю.</p>
+              <p>Прости, пожалуйста.</p>
+              <div class="signature">Без ожиданий и давления.</div>
+            </div>
+          </article>
+          <div class="envelope-front"></div>
+        </div>
+
+        <button class="seal" id="open-letter" type="button" aria-label="Открыть письмо" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 20.2 4.8 13.4A4.8 4.8 0 0 1 11.6 6.6L12 7l.4-.4a4.8 4.8 0 0 1 6.8 6.8L12 20.2Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <p class="prompt" id="prompt">Нажми, чтобы открыть письмо</p>
+      <p class="afterword">На этой странице нет аналитики, форм и способа отследить просмотр. Это просто письмо.</p>
+    </section>
+  </main>
+
+  <script>
+    const scene = document.querySelector('#scene');
+    const button = document.querySelector('#open-letter');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    function addPetals() {
+      if (reducedMotion.matches) return;
+      for (let index = 0; index < 12; index += 1) {
+        const petal = document.createElement('span');
+        petal.className = 'petal';
+        petal.style.setProperty('--x', `${Math.random() * 100}vw`);
+        petal.style.setProperty('--sway', `${Math.random() * 80 - 40}px`);
+        petal.style.setProperty('--duration', `${5 + Math.random() * 4}s`);
+        petal.style.animationDelay = `${Math.random() * 1.2}s`;
+        document.body.appendChild(petal);
+        petal.addEventListener('animationend', () => petal.remove());
+      }
+    }
+
+    button.addEventListener('click', () => {
+      scene.classList.add('opened');
+      button.setAttribute('aria-expanded', 'true');
+      addPetals();
+      window.setTimeout(() => {
+        document.querySelector('.letter').focus?.();
+      }, reducedMotion.matches ? 0 : 900);
+    }, { once: true });
+
+    if (new URLSearchParams(window.location.search).has('open')) {
+      window.setTimeout(() => button.click(), 100);
+    }
+  </script>
+</body>
+</html>
