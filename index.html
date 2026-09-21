@@ -179,6 +179,65 @@
       font-style: italic;
     }
 
+    .rewind {
+      margin-top: 30px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+    }
+
+    .rewind-button {
+      min-height: 48px;
+      width: 100%;
+      padding: 12px 18px;
+      border: 1px solid var(--rose);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--rose-dark);
+      font: 700 .92rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      cursor: pointer;
+      transition: color .2s ease, background .2s ease, transform .2s ease;
+    }
+
+    .rewind-button:hover { background: var(--rose); color: #fffaf6; transform: translateY(-1px); }
+    .rewind-button:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; }
+    .rewind-button:disabled { cursor: default; opacity: .7; transform: none; }
+
+    .rewind-track {
+      height: 4px;
+      margin-top: 15px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--line);
+      opacity: 0;
+      transition: opacity .2s ease;
+    }
+
+    .rewind-track::before {
+      content: "";
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--rose);
+    }
+
+    .rewinding .rewind-track { opacity: 1; }
+    .rewinding .rewind-track::before { animation: rewind-progress 2.1s cubic-bezier(.3,.7,.2,1) forwards; }
+
+    .rewind-status {
+      min-height: 1.5em;
+      margin: 12px 0 0 !important;
+      color: var(--muted);
+      font: .9rem/1.5 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      text-align: center;
+    }
+
+    @keyframes rewind-progress {
+      0% { width: 0; }
+      72% { width: 88%; }
+      100% { width: 100%; }
+    }
+
     .envelope-front {
       z-index: 3;
       overflow: hidden;
@@ -223,18 +282,6 @@
       transition: opacity .35s ease;
     }
 
-    .afterword {
-      max-width: 510px;
-      margin: 34px auto 0;
-      color: var(--muted);
-      font-size: .86rem;
-      line-height: 1.6;
-      opacity: 0;
-      transform: translateY(8px);
-      pointer-events: none;
-      transition: opacity .6s 1s ease, transform .6s 1s ease;
-    }
-
     .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
     .opened .envelope-wrap { height: 680px; }
     .opened .envelope { transform: translateY(75px); filter: none; }
@@ -251,7 +298,12 @@
       box-shadow: var(--shadow);
     }
     .opened .letter-content { opacity: 1; transform: translateY(0); }
-    .opened .afterword { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .opened .envelope-back,
+    .opened .flap,
+    .opened .envelope-front {
+      opacity: 0;
+      transition: opacity .3s .55s ease;
+    }
 
     .petal {
       position: fixed;
@@ -270,7 +322,8 @@
     }
 
     @media (max-width: 560px) {
-      main { width: min(100% - 22px, 760px); padding: 28px 0; }
+      main { width: min(calc(100% - 22px), 760px); padding: 28px 0; }
+      .scene.opened { align-self: start; }
       .envelope-wrap { width: 100%; height: 250px; }
       .envelope { height: 225px; }
       .letter { padding: 30px 24px; }
@@ -295,17 +348,22 @@
       <p class="eyebrow">Несколько честных слов</p>
 
       <div class="envelope-wrap">
-        <div class="envelope" aria-hidden="true">
+        <div class="envelope">
           <div class="envelope-back"></div>
           <div class="flap"></div>
-          <article class="letter">
+          <article class="letter" aria-hidden="true" inert>
             <div class="letter-content">
               <h1 id="letter-title">Мне важно извиниться.</h1>
-              <p>Я нашёл твои контакты способом, который мог показаться неожиданным и нарушить твоё личное пространство. Мне стоило сначала подумать о том, насколько это будет комфортно для тебя.</p>
-              <p>Моё желание познакомиться не отменяет твоих границ. Я не хочу ставить тебя в неловкое положение и ничего от тебя не жду.</p>
-              <p class="quiet">Если ты не захочешь отвечать или продолжать общение — я пойму и полностью это уважаю.</p>
+              <p>Я нашёл твои контакты способом, который мог показаться неожиданным. В моей голове это выглядело гораздо менее странно. После повторного просмотра сценария стало ясно: автор немного переоценил сюжет.</p>
+              <p>Без длинных оправданий: мне стоило сначала подумать, насколько это будет комфортно для тебя.</p>
               <p>Прости, пожалуйста.</p>
-              <div class="signature">Без ожиданий и давления.</div>
+              <div class="signature">С искренним «прости».</div>
+
+              <div class="rewind" id="rewind">
+                <button class="rewind-button" id="rewind-button" type="button">Попробовать откатить неловкий момент</button>
+                <div class="rewind-track" aria-hidden="true"></div>
+                <p class="rewind-status" id="rewind-status" role="status" aria-live="polite"></p>
+              </div>
             </div>
           </article>
           <div class="envelope-front"></div>
@@ -319,13 +377,16 @@
       </div>
 
       <p class="prompt" id="prompt">Нажми, чтобы открыть письмо</p>
-      <p class="afterword">На этой странице нет аналитики, форм и способа отследить просмотр. Это просто письмо.</p>
     </section>
   </main>
 
   <script>
     const scene = document.querySelector('#scene');
     const button = document.querySelector('#open-letter');
+    const letter = document.querySelector('.letter');
+    const rewind = document.querySelector('#rewind');
+    const rewindButton = document.querySelector('#rewind-button');
+    const rewindStatus = document.querySelector('#rewind-status');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function addPetals() {
@@ -345,14 +406,36 @@
     button.addEventListener('click', () => {
       scene.classList.add('opened');
       button.setAttribute('aria-expanded', 'true');
+      letter.setAttribute('aria-hidden', 'false');
+      letter.removeAttribute('inert');
       addPetals();
       window.setTimeout(() => {
         document.querySelector('.letter').focus?.();
       }, reducedMotion.matches ? 0 : 900);
     }, { once: true });
 
+    rewindButton.addEventListener('click', () => {
+      rewind.classList.add('rewinding');
+      rewindButton.disabled = true;
+      rewindButton.textContent = 'Запускаю машину времени…';
+      rewindStatus.textContent = 'Ищу кнопку «Отменить»…';
+
+      window.setTimeout(() => {
+        rewindStatus.textContent = 'Ошибка 404: машина времени не найдена.';
+      }, reducedMotion.matches ? 0 : 1300);
+
+      window.setTimeout(() => {
+        rewindButton.textContent = 'Урок усвоен';
+        rewindStatus.textContent = 'Остаётся только ещё раз честно сказать: прости.';
+      }, reducedMotion.matches ? 0 : 2200);
+    }, { once: true });
+
     if (new URLSearchParams(window.location.search).has('open')) {
       window.setTimeout(() => button.click(), 100);
+    }
+
+    if (new URLSearchParams(window.location.search).has('rewind')) {
+      window.setTimeout(() => rewindButton.click(), 1000);
     }
   </script>
 </body>
