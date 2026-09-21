@@ -386,7 +386,7 @@
 
     .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
     .opened .envelope-wrap { height: 980px; }
-    .case-active .envelope-wrap { height: 1450px; }
+    .case-active .envelope-wrap { height: 1580px; }
     .opened .envelope { transform: translateY(75px); filter: none; }
     .opened .flap { transform: rotateX(180deg); z-index: 1; }
     .opened .seal { opacity: 0; pointer-events: none; }
@@ -431,7 +431,7 @@
       .envelope { height: 225px; }
       .letter { padding: 30px 24px; }
       .opened .envelope-wrap { height: 1180px; }
-      .case-active .envelope-wrap { height: 1800px; }
+      .case-active .envelope-wrap { height: 1960px; }
       .opened .letter {
         left: 0;
         right: 0;
@@ -483,6 +483,10 @@
                   <li class="evidence">
                     <span class="evidence-number">04</span>
                     <span><strong>Запись разговора</strong>Сохранила контрольную копию сюжета и, надеюсь, вернула тебе немного спокойствия.</span>
+                  </li>
+                  <li class="evidence">
+                    <span class="evidence-number">05</span>
+                    <span><strong>Запрос через подругу</strong>Отклонён без права апелляции. Мотивы решения до сих пор засекречены.</span>
                   </li>
                 </ol>
                 <button class="case-button" id="case-button" type="button">Открыть первую улику</button>
@@ -589,7 +593,7 @@
     }
 
     if (new URLSearchParams(window.location.search).has('case')) {
-      [900, 1400, 1900, 2400].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
+      [900, 1400, 1900, 2400, 2900].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
     }
   </script>
 </body>
