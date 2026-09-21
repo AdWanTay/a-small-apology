@@ -203,7 +203,7 @@
     }
 
     .evidence {
-      display: none;
+      display: grid;
       grid-template-columns: 34px 1fr;
       gap: 12px;
       align-items: start;
@@ -211,10 +211,13 @@
       border-radius: 12px;
       background: var(--paper);
       box-shadow: 0 3px 10px rgba(60,40,30,.05);
-      animation: evidence-in .45s cubic-bezier(.2,.8,.2,1) both;
+      cursor: pointer;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
     }
 
-    .evidence.revealed { display: grid; }
+    .evidence:hover { transform: translateY(-2px); }
+    .evidence:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; }
+    .evidence.revealed { background: #fffaf4; animation: evidence-in .45s cubic-bezier(.2,.8,.2,1) both; }
 
     .evidence-number {
       width: 30px;
@@ -238,22 +241,58 @@
       font: .86rem/1.5 Avenir, "Avenir Next", "Segoe UI", sans-serif;
     }
 
-    .case-button {
-      min-height: 46px;
-      width: 100%;
-      padding: 11px 16px;
-      border: 0;
-      border-radius: 999px;
-      background: var(--ink);
-      color: var(--paper);
-      font: 700 .9rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
-      cursor: pointer;
-      transition: transform .2s ease, opacity .2s ease;
+    .evidence-detail {
+      display: block;
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height .45s ease, opacity .3s ease;
     }
 
-    .case-button:hover { transform: translateY(-1px); }
-    .case-button:focus-visible { outline: 3px solid var(--rose); outline-offset: 3px; }
-    .case-button:disabled { cursor: default; opacity: .72; transform: none; }
+    .revealed .evidence-detail { max-height: 120px; opacity: 1; }
+
+    .case-progress {
+      margin: 12px 0 0 !important;
+      color: var(--muted);
+      font: 700 .82rem/1.4 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      text-align: center;
+    }
+
+    .genre-picker {
+      margin-top: 18px;
+      animation: evidence-in .45s ease both;
+    }
+
+    .genre-picker[hidden] { display: none; }
+
+    .genre-title {
+      margin: 0 0 10px !important;
+      color: var(--ink);
+      font: 700 .9rem/1.4 Avenir, "Avenir Next", "Segoe UI", sans-serif !important;
+      text-align: center;
+    }
+
+    .genre-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .genre-button {
+      min-height: 44px;
+      padding: 9px 8px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 700 .78rem/1.2 Avenir, "Avenir Next", "Segoe UI", sans-serif;
+      cursor: pointer;
+      transition: transform .2s ease, color .2s ease, background .2s ease;
+    }
+
+    .genre-button:hover { transform: translateY(-2px); background: var(--rose); color: white; }
+    .genre-button:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; }
+    .genre-button.selected { background: var(--ink); color: var(--paper); }
 
     .verdict {
       display: none;
@@ -422,6 +461,7 @@
       .envelope-wrap { width: 100%; height: 250px; }
       .envelope { height: 225px; }
       .letter { padding: 30px 24px; }
+      .genre-options { grid-template-columns: 1fr; }
       .opened .envelope-wrap { height: 1180px; }
       .case-active .envelope-wrap { height: 1960px; }
       .opened .letter {
@@ -449,40 +489,46 @@
           <div class="flap"></div>
           <article class="letter" aria-hidden="true" inert>
             <div class="letter-content">
-              <h1 id="letter-title">Хотел сказать это нормально.</h1>
-              <p>Кажется, наш сюжет стартовал сразу со второго сезона — без пилотной серии, нормального вступления и объяснения, кто вообще утвердил этот сценарий.</p>
-              <p>Вообще-то я начал с самого обычного плана: попросил твой Telegram у подруги. Запрос отклонили без права апелляции, но знакомство казалось мне слишком желанным, чтобы оставить историю на таком финале. Поэтому я включил режим частного детектива и нашёл контакты сам.</p>
-              <p>Это не оправдание, а честная хронология того, как простая просьба превратилась в мини-сериал.</p>
-              <p>Когда ты позже сказала, что записала разговор, мне неожиданно стало спокойнее. Не потому, что запись была нужна, а потому, что у тебя появился способ увереннее контролировать ситуацию. Надеюсь, после того как я тебя напугал, это хотя бы немного помогло.</p>
-              <p>Плохих намерений у меня не было. Но теперь я понимаю: намерения и то, как всё выглядит со стороны, — две очень разные серии.</p>
+              <h1 id="letter-title">Коротко: сюжет вышел странный.</h1>
+              <p><strong>План А:</strong> попросить твой Telegram у подруги. План А отклонили без права апелляции.</p>
+              <p><strong>План Б:</strong> включить режим частного детектива, потому что знакомство казалось слишком желанным для ранних титров.</p>
+              <p>Ниже — интерактивная реконструкция. Все совпадения с детективной комедией совершенно неслучайны.</p>
 
               <section class="case-file" aria-labelledby="case-title">
                 <p class="case-label">Дело № 404</p>
-                <h2 class="case-title" id="case-title">Материалы самого нестандартного знакомства</h2>
+                <h2 class="case-title" id="case-title">Открой улики в любом порядке</h2>
                 <ol class="evidence-list">
-                  <li class="evidence">
+                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
                     <span class="evidence-number">01</span>
-                    <span><strong>Запрос через подругу</strong>Нормальный путь был испробован первым. Запрос отклонён без права апелляции.</span>
+                    <span><strong>Запрос через подругу</strong><span class="evidence-detail">Нормальный путь был испробован первым. Запрос отклонён без права апелляции.</span></span>
                   </li>
-                  <li class="evidence">
+                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
                     <span class="evidence-number">02</span>
-                    <span><strong>Контакты</strong>После отказа найден обходной маршрут. Мотивация — очень хотелось познакомиться. Метод — немного детективный.</span>
+                    <span><strong>Контакты</strong><span class="evidence-detail">После отказа найден обходной маршрут. Мотивация — очень хотелось познакомиться. Метод — немного детективный.</span></span>
                   </li>
-                  <li class="evidence">
+                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
                     <span class="evidence-number">03</span>
-                    <span><strong>Адрес</strong>Был знаком второй стороне не случайно: когда-то в этой квартире жила твоя подруга.</span>
+                    <span><strong>Адрес</strong><span class="evidence-detail">Был знаком второй стороне не случайно: когда-то в этой квартире жила твоя подруга.</span></span>
                   </li>
-                  <li class="evidence">
+                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
                     <span class="evidence-number">04</span>
-                    <span><strong>Дверь</strong>В тот период однажды прошла внеплановый тест на вскрытие. Похоже, детективная линия появилась в этой истории ещё до моего участия.</span>
+                    <span><strong>Дверь</strong><span class="evidence-detail">В тот период однажды прошла внеплановый тест на вскрытие. Похоже, детективная линия появилась в этой истории ещё до моего участия.</span></span>
                   </li>
-                  <li class="evidence">
+                  <li class="evidence" role="button" tabindex="0" aria-expanded="false">
                     <span class="evidence-number">05</span>
-                    <span><strong>Запись разговора</strong>Сохранила контрольную копию сюжета и, надеюсь, вернула тебе немного спокойствия.</span>
+                    <span><strong>Запись разговора</strong><span class="evidence-detail">Сохранила контрольную копию сюжета и, надеюсь, вернула тебе немного спокойствия.</span></span>
                   </li>
                 </ol>
-                <button class="case-button" id="case-button" type="button">Открыть первую улику</button>
-                <p class="verdict" id="verdict">Вердикт: намерения романтические, исполнение детективное, а сценарий писал Гай Ричи на минималках.</p>
+                <p class="case-progress"><span id="evidence-count">0</span> из 5 улик изучено</p>
+                <div class="genre-picker" id="genre-picker" hidden>
+                  <p class="genre-title">Все улики собраны. Выбери жанр финала:</p>
+                  <div class="genre-options">
+                    <button class="genre-button" type="button" data-genre="romcom">Ромком</button>
+                    <button class="genre-button" type="button" data-genre="detective">Детектив</button>
+                    <button class="genre-button" type="button" data-genre="comedy">Комедия ошибок</button>
+                  </div>
+                </div>
+                <p class="verdict" id="verdict" role="status" aria-live="polite"></p>
               </section>
 
               <div class="rewind" id="rewind">
@@ -513,8 +559,10 @@
     const rewind = document.querySelector('#rewind');
     const rewindButton = document.querySelector('#rewind-button');
     const rewindStatus = document.querySelector('#rewind-status');
-    const caseButton = document.querySelector('#case-button');
     const evidence = [...document.querySelectorAll('.evidence')];
+    const evidenceCount = document.querySelector('#evidence-count');
+    const genrePicker = document.querySelector('#genre-picker');
+    const genreButtons = [...document.querySelectorAll('.genre-button')];
     const verdict = document.querySelector('#verdict');
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -559,21 +607,47 @@
       }, reducedMotion.matches ? 0 : 2200);
     }, { once: true });
 
-    let evidenceIndex = 0;
-    caseButton.addEventListener('click', () => {
+    let revealedEvidence = 0;
+
+    function revealEvidence(card) {
+      if (card.classList.contains('revealed')) return;
+
       scene.classList.add('case-active');
-      evidence[evidenceIndex].classList.add('revealed');
-      evidenceIndex += 1;
+      card.classList.add('revealed');
+      card.setAttribute('aria-expanded', 'true');
+      revealedEvidence += 1;
+      evidenceCount.textContent = revealedEvidence;
 
-      if (evidenceIndex < evidence.length) {
-        caseButton.textContent = `Открыть улику ${evidenceIndex + 1} из ${evidence.length}`;
-        return;
+      if (revealedEvidence === evidence.length) {
+        genrePicker.hidden = false;
+        addPetals();
       }
+    }
 
-      caseButton.textContent = 'Все улики изучены';
-      caseButton.disabled = true;
-      verdict.classList.add('visible');
-      addPetals();
+    evidence.forEach((card) => {
+      card.addEventListener('click', () => revealEvidence(card));
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          revealEvidence(card);
+        }
+      });
+    });
+
+    const genreVerdicts = {
+      romcom: 'Ромком: герой выбрал крайне сложный способ сказать «ты мне понравилась». Бюджет ушёл на расследование.',
+      detective: 'Детектив: мотив установлен — очень хотелось познакомиться. Улики собраны, злой умысел в сценарий не завезли.',
+      comedy: 'Комедия ошибок: намерения романтические, исполнение детективное, а сценарий писал Гай Ричи на минималках.'
+    };
+
+    genreButtons.forEach((genreButton) => {
+      genreButton.addEventListener('click', () => {
+        genreButtons.forEach((item) => item.classList.remove('selected'));
+        genreButton.classList.add('selected');
+        verdict.textContent = genreVerdicts[genreButton.dataset.genre];
+        verdict.classList.add('visible');
+        addPetals();
+      });
     });
 
     if (new URLSearchParams(window.location.search).has('open')) {
@@ -585,7 +659,10 @@
     }
 
     if (new URLSearchParams(window.location.search).has('case')) {
-      [900, 1400, 1900, 2400, 2900].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
+      evidence.forEach((card, index) => {
+        window.setTimeout(() => card.click(), 900 + index * 500);
+      });
+      window.setTimeout(() => document.querySelector('[data-genre="comedy"]').click(), 3600);
     }
   </script>
 </body>
