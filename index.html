@@ -385,8 +385,8 @@
     }
 
     .opened .eyebrow { opacity: 0; transform: translateY(-8px); }
-    .opened .envelope-wrap { height: 680px; }
-    .case-active .envelope-wrap { height: 1040px; }
+    .opened .envelope-wrap { height: 980px; }
+    .case-active .envelope-wrap { height: 1450px; }
     .opened .envelope { transform: translateY(75px); filter: none; }
     .opened .flap { transform: rotateX(180deg); z-index: 1; }
     .opened .seal { opacity: 0; pointer-events: none; }
@@ -430,8 +430,8 @@
       .envelope-wrap { width: 100%; height: 250px; }
       .envelope { height: 225px; }
       .letter { padding: 30px 24px; }
-      .opened .envelope-wrap { height: 780px; }
-      .case-active .envelope-wrap { height: 1240px; }
+      .opened .envelope-wrap { height: 1180px; }
+      .case-active .envelope-wrap { height: 1800px; }
       .opened .letter {
         left: 0;
         right: 0;
@@ -457,11 +457,12 @@
           <div class="flap"></div>
           <article class="letter" aria-hidden="true" inert>
             <div class="letter-content">
-              <h1 id="letter-title">Мне важно извиниться.</h1>
-              <p>Кажется, у нашей истории сценарист немного увлёкся. Ты знаешь, где я живу, моя дверь однажды прошла внеплановый стресс-тест — хотя справедливости ради, тогда в квартире жила твоя подруга.</p>
-              <p>А я зачем-то включил режим частного детектива и нашёл твои контакты. В моей голове это выглядело гораздо менее странно, чем звучит сейчас.</p>
-              <p>Прости, пожалуйста.</p>
-              <div class="signature">С искренним «прости».</div>
+              <h1 id="letter-title">Хотел сказать это нормально.</h1>
+              <p>Кажется, наш сюжет стартовал сразу со второго сезона. Ты знаешь, где я живу, моя дверь однажды прошла внеплановый стресс-тест — хотя справедливости ради, тогда в квартире жила твоя подруга.</p>
+              <p>А я зачем-то включил режим частного детектива, нашёл твои контакты и во время разговора читал твои данные. В моей голове это выглядело гораздо менее странно, чем звучит сейчас.</p>
+              <p>Когда ты позже сказала, что записала разговор, мне неожиданно стало спокойнее. Не потому, что запись была нужна, а потому, что у тебя появился способ увереннее контролировать ситуацию. Надеюсь, после того как я тебя напугал, это хотя бы немного помогло.</p>
+              <p>Плохих намерений у меня не было. Но теперь я понимаю: намерения и то, как всё выглядит со стороны, — две очень разные серии.</p>
+              <div class="signature">Мне правда жаль, что всё получилось пугающе.</div>
 
               <section class="case-file" aria-labelledby="case-title">
                 <p class="case-label">Дело № 404</p>
@@ -479,13 +480,17 @@
                     <span class="evidence-number">03</span>
                     <span><strong>Контакты</strong>Найдены в режиме частного детектива. Здесь подозреваемый признаёт: получилось странновато.</span>
                   </li>
+                  <li class="evidence">
+                    <span class="evidence-number">04</span>
+                    <span><strong>Запись разговора</strong>Сохранила контрольную копию сюжета и, надеюсь, вернула тебе немного спокойствия.</span>
+                  </li>
                 </ol>
                 <button class="case-button" id="case-button" type="button">Открыть первую улику</button>
-                <p class="verdict" id="verdict">Вердикт: сценарий знакомства писал Гай Ричи на минималках. Но за мою часть сюжета извинение остаётся в силе.</p>
+                <p class="verdict" id="verdict">Вердикт: плохого умысла не обнаружено. Зато обнаружен сценарий Гая Ричи на минималках. Вывод: меньше расследований, больше обычных человеческих слов.</p>
               </section>
 
               <div class="rewind" id="rewind">
-                <button class="rewind-button" id="rewind-button" type="button">Попробовать откатить неловкий момент</button>
+                <button class="rewind-button" id="rewind-button" type="button">Запустить редактор сценария</button>
                 <div class="rewind-track" aria-hidden="true"></div>
                 <p class="rewind-status" id="rewind-status" role="status" aria-live="polite"></p>
               </div>
@@ -545,16 +550,16 @@
     rewindButton.addEventListener('click', () => {
       rewind.classList.add('rewinding');
       rewindButton.disabled = true;
-      rewindButton.textContent = 'Запускаю машину времени…';
-      rewindStatus.textContent = 'Ищу кнопку «Отменить»…';
+      rewindButton.textContent = 'Переписываю первый эпизод…';
+      rewindStatus.textContent = 'Убираю режим частного детектива…';
 
       window.setTimeout(() => {
-        rewindStatus.textContent = 'Ошибка 404: машина времени не найдена.';
+        rewindStatus.textContent = 'Добавляю обычное человеческое знакомство…';
       }, reducedMotion.matches ? 0 : 1300);
 
       window.setTimeout(() => {
-        rewindButton.textContent = 'Урок усвоен';
-        rewindStatus.textContent = 'Остаётся только ещё раз честно сказать: прости.';
+        rewindButton.textContent = 'Новая версия сохранена';
+        rewindStatus.textContent = 'Готово: меньше расследований, больше нормальных слов.';
       }, reducedMotion.matches ? 0 : 2200);
     }, { once: true });
 
@@ -584,7 +589,7 @@
     }
 
     if (new URLSearchParams(window.location.search).has('case')) {
-      [900, 1400, 1900].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
+      [900, 1400, 1900, 2400].forEach((delay) => window.setTimeout(() => caseButton.click(), delay));
     }
   </script>
 </body>
